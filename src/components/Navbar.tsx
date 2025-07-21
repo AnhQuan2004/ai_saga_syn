@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Sparkles } from "lucide-react";
+import { Menu, Sparkles, Wallet, FileText } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { WalletPopup } from "./WalletPopup";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isWalletOpen, setIsWalletOpen] = useState(false);
   const { isAdmin, logout } = useAuth();
 
   const NavLinks = () => (
@@ -38,6 +40,28 @@ const Navbar = () => {
         >
           Bounties
         </Button>
+      </Link>
+      <Button
+        variant="ghost"
+        className="w-full justify-start md:w-auto"
+        onClick={() => {
+          setIsWalletOpen(true);
+          setIsOpen(false);
+        }}
+        id="wallet-button"
+      >
+        <Wallet className="w-4 h-4 mr-2" />
+        Wallet
+      </Button>
+      <Link to="/mint-nft" className="block">
+        {/* <Button
+          variant="ghost"
+          className="w-full justify-start md:w-auto"
+          onClick={() => setIsOpen(false)}
+        >
+          <FileText className="w-4 h-4 mr-2" />
+          Mint NFT
+        </Button> */}
       </Link>
       {isAdmin && (
         <Link to="/create-bounty" className="block">
@@ -85,13 +109,13 @@ const Navbar = () => {
         </Button>
       ) : (
         <Link to="/signin" className="block">
-          <Button
+          {/* <Button
             variant="outline"
             className="w-full md:w-auto"
             onClick={() => setIsOpen(false)}
           >
             Sign In
-          </Button>
+          </Button> */}
         </Link>
       )}
       <Link to="/wizard">
@@ -151,6 +175,9 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
+      {/* Wallet Popup */}
+      <WalletPopup isOpen={isWalletOpen} onClose={() => setIsWalletOpen(false)} />
     </nav>
   );
 };

@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Coffee } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface Bounty {
   id: number;
   amount: string;
-  status: string;
+  distributed: string;
   creator: string;
-  contributorCount: number;
+  contributors: string[];
 }
 
 interface BountiesSummary {
@@ -84,19 +86,21 @@ export const Bounties = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <CardTitle>Bounty #{bounty.id}</CardTitle>
-                  <Badge variant={bounty.status === 'active' ? 'default' : 'secondary'}>
-                    {bounty.status}
+                  <Badge variant={bounty.distributed  ? 'secondary' : 'default'}>
+                    {bounty.distributed ? 'Distributed' : 'Active'}
                   </Badge>
+                  
                 </div>
-                <CardDescription>Reward: {bounty.amount} ETH</CardDescription>
+                <CardDescription>Reward: {bounty.amount} QSG</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-sm text-muted-foreground space-y-1">
                   <p className="truncate" title={bounty.creator}>
                     Creator: {bounty.creator}
                   </p>
-                  <p>Contributors: {bounty.contributorCount}</p>
+                  <p>Contributors: {bounty.contributors.length}</p>
                 </div>
+             
               </CardContent>
             </Card>
           ))}

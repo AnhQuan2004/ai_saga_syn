@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { MintNFTAfterGeneration } from "@/components/MintNFTAfterGeneration";
 
 type GenerationStatus = "idle" | "generating" | "success" | "error";
 
@@ -17,6 +18,25 @@ interface SyntheticData {
   };
 }
 
+interface ApiResponse {
+  success: boolean;
+  message: string;
+  data: SyntheticData[];
+  metadata: {
+    name: string;
+    description: string;
+    contentHash: string;
+    sourceUrl: string;
+    contentLink: string;
+    embedVectorId: string;
+    createdAt: number;
+    tags: string[];
+  };
+  irys_links: {
+    content_url: string;
+    metadata_url: string;
+  };
+}
 
 export const Step5GenerateDataset = ({
   onBack,
@@ -45,6 +65,9 @@ export const Step5GenerateDataset = ({
   const [generatedRows, setGeneratedRows] = useState(0);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [syntheticData, setSyntheticData] = useState<SyntheticData[]>([]);
+  const [apiResponse, setApiResponse] = useState<ApiResponse | null>(null);
+  const [mintingComplete, setMintingComplete] = useState(false);
+  const [mintedTokenId, setMintedTokenId] = useState<string | null>(null);
 
   useEffect(() => {
     // Auto-start generation when component mounts
@@ -86,8 +109,8 @@ export const Step5GenerateDataset = ({
       if (data.success) {
         setDownloadUrl(data.irys_links.content_url);
         setSyntheticData(data.data);
-        // Data for marketplace will be fetched on the marketplace page itself
-
+        setApiResponse(data);
+        
         // Simulate progress for now, as the API is not streaming progress
         for (let i = 0; i <= 100; i += 2) {
           setProgress(i);
@@ -112,6 +135,16 @@ export const Step5GenerateDataset = ({
 
   const listOnMarketplace = () => {
     navigate("/marketplace");
+  };
+
+  const handleMintSuccess = (tokenId: string) => {
+    setMintingComplete(true);
+    setMintedTokenId(tokenId);
+  };
+
+  const handleMintError = (error: Error) => {
+    console.error("Minting error:", error);
+    // You can add additional error handling here if needed
   };
 
   return (
@@ -205,7 +238,18 @@ export const Step5GenerateDataset = ({
                 </div>
               </div>
 
+              {/* NFT Minting Section */}
+              {apiResponse && !mintingComplete && (
+                <div className="my-6">
+                  <MintNFTAfterGeneration 
+                    apiResponse={apiResponse}
+                    onMintSuccess={handleMintSuccess}
+                    onMintError={handleMintError}
+                  />
+                </div>
+              )}
 
+              {/* Buttons for downloading and marketplace */}
               <div className="space-y-3">
                 <Button
                   onClick={downloadDataset}
@@ -225,7 +269,7 @@ export const Step5GenerateDataset = ({
                   disabled={status !== 'success'}
                 >
                   <Store className="w-4 h-4 mr-2" />
-                  List on Marketplace
+                  {mintingComplete ? "View Your NFT in Marketplace" : "Browse Marketplace"}
                 </Button>
               </div>
             </div>

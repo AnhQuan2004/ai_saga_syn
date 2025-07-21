@@ -15,6 +15,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { Bounties } from "./pages/Bounties";
 import { AddContributor } from "./pages/AddContributor";
 import { DistributeBounty } from "./pages/DistributeBounty";
+import WalletDemo from "./pages/WalletDemo";
+import MintNFT from "./pages/MintNFT";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
             <Route path="/bounties" element={<Bounties />} />
             <Route path="/add-contributor" element={<AddContributor />} />
             <Route path="/distribute-bounty" element={<DistributeBounty />} />
+            <Route path="/wallet" element={<WalletDemo />} />
+            <Route path="/mint-nft" element={<MintNFT />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
